@@ -1,115 +1,231 @@
-<html><head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>发送到电脑-- Quicker</title>
-    <link href="https://files.getquicker.cn/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-<body>
-    <section id="app" class="section mb-5"><div class="container"><div class="row"><div class="col-12 col-lg-8"><h3 class="title mt-3 mb-4">
-                        推送文本到电脑
-                        <a data-bs-toggle="collapse" href="#pnlSettings" role="button" class="btn btn-sm btn-outline-primary">
-                            连接设置
-                        </a></h3> <form><div id="pnlSettings" class="collapse p-2 bg-light mb-3"><div class="mb-3 row"><label class=" col-form-label col-sm-3">Email：</label> <div class="col-sm-9"><input type="text" class="form-control"></div></div> <div class="mb-3 row"><label class=" col-form-label col-sm-3">推送验证码：</label> <div class="col-sm-9"><input type="password" class="form-control"></div></div> <div class="mb-3 row"><label class="col-form-label col-sm-3">目标设备：</label> <div class="col-sm-9"><select id="toDevice" class="form-select"><option value="">*活动*</option> <option value="*">*所有主机*</option></select></div></div> <div class="row mb-3  justify-content-end"><div class="col-sm-9"><div class="input-group"><div class="input-group-text"><input type="checkbox" id="chkWait" class="form-check-input mt-0 mr-1"> <label for="chkWait" class="form-check-label ml-3">&nbsp;等待返回结果</label></div> <input type="number" id="maxWaitMs" aria-describedby="emailHelp" class="form-control"> <span id="basic-addon2" class="input-group-text">毫秒</span></div></div></div> <div class="row mb-3 justify-content-end"><div class="col-sm-9"><div class="form-check"><input type="checkbox" id="flexCheckDefault" class="form-check-input"> <label for="flexCheckDefault" class="form-check-label">
-                                            发送成功后自动清除内容
-                                        </label></div></div></div></div> <div class="mb-3 row"><div role="group" aria-label="Basic radio toggle button group" class="btn-group"><input type="radio" name="operation" id="radioPASTE" autocomplete="off" class="btn-check" value="PASTE"> <label for="radioPASTE" class="btn btn-outline-secondary">粘贴到窗口</label><input type="radio" name="operation" id="radioCOPY" autocomplete="off" class="btn-check" value="COPY"> <label for="radioCOPY" class="btn btn-outline-secondary">复制</label><input type="radio" name="operation" id="radioOPEN" autocomplete="off" class="btn-check" value="OPEN"> <label for="radioOPEN" class="btn btn-outline-secondary">打开网址</label><input type="radio" name="operation" id="radioACTION" autocomplete="off" class="btn-check" value="ACTION"> <label for="radioACTION" class="btn btn-outline-secondary">运行动作</label></div></div> <!----> <div class="mb-3"><label class="form-label">要复制或粘贴的内容、打开的网址，或动作的参数:</label> <textarea rows="8" id="txtData" aria-describedby="emailHelp" class="form-control"></textarea></div></form> <div class="row"><div class="col-3 d-grid"><button class="btn btn-outline-secondary">粘贴</button></div> <div class="col-6 d-grid"><button class="btn btn-primary">发送</button></div> <div class="col-3  d-grid "><button class="btn  btn-secondary">清除</button></div></div> <!----></div></div></div></section>
-    <div class="mt-5 mb-5 p-5">
-    </div>
-
-    <script src="https://files.getquicker.cn/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://files.getquicker.cn/vue@2.6.14/dist/vue.min.js"></script>
-    <script src="https://files.getquicker.cn/axios@0.19.2/dist/axios.min.js"></script>
-    <script>
-    function setFocusToData(){
-        document.getElementById('txtData').focus();
-    }
-
-
-    const queryString = window.location.search;
-    let email = '';
-    let code = '';
-    if (queryString){
-        const urlParams = new URLSearchParams(queryString);
-        email = urlParams.get('email')
-        code = urlParams.get('code');
-
-        // 从url中自动清除email和密码
-        //window.history.replaceState(null, null, window.location.pathname);
-    }
-
-
-    var app = new Vue({
-        el: '#app',
-        data: {
-            toUser: email,
-            code: code,
-            toDevice:'',
-            operation: 'PASTE',
-            action: '',
-            data: '',
-            wait: true,
-            maxWaitMs: 3000,
-            resp:{
-
-            },
-            error: false,
-            operationTypes:[
-                {value:'PASTE',name:'粘贴到窗口'},
-                {value:'COPY',name:'复制'},
-                {value:'OPEN',name:'打开网址'},
-                {value:'ACTION',name:'运行动作'}
-            ],
-            autoClear: false
-        },
-        methods: {
-            submit: function () {
-                vm = this;
-                vm.resp = {};
-                console.log(vm);
-                //
-                //alert(this);
-                axios({
-                    method: 'post',
-                    url: 'https://push.getquicker.cn/to/quicker',
-                    data: {
-                        toUser: vm.toUser,
-                        code: vm.code,
-                        toDevice: vm.toDevice,
-                        operation: vm.operation,
-                        action: vm.action,
-                        data: vm.data,
-                        wait: vm.wait,
-                        maxWaitMs: vm.maxWaitMs
-                    }
-                }).then(function(response) {
-                    console.log('请求返回结果：', response);
-                    vm.resp = response;
-                    //alert(response.data);
-
-                    if (response.data.isSuccess && vm.autoClear){
-                        vm.data = '';
-                    }
-                    setFocusToData();
-                }).catch(function(error){
-                    console.error(error);
-                    vm.error = error;
-                });
-            },
-            clear: function(){
-                this.data = '';
-            },
-            paste: function() {
-                navigator.clipboard.readText()
-                    .then(text => {
-                        this.data = text;
-                    })
-                    .catch(err => {
-                        alert('获取剪贴板内容失败：' + err.message);
-                    });
-            }
-        }
-    })
-    </script>
-
-
-</body></html>
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<link rel="shortcut icon" href="https://getquicker.net/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="https://getquicker.net/favicon.ico" type="image/x-icon">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Quicker推送_乐昂岚版</title>
+		<style>
+			body{width:50%;margin:1em auto;font-size:1em;}
+			.title{font-size:calc(1.3rem + .6vw);font-weight: 500;line-height: 1.2;}
+			#setting{
+				padding: .25rem .5rem;
+				font-size: .875rem;
+				border-radius: .2rem;
+				color: #0d6efd;
+				border-color: #0d6efd;
+			}
+			#setting_detial{display: block;}
+			.btn {
+				display: inline-block;
+				line-height: 1.5;
+				color: #212529;
+				text-align: center;
+				text-decoration: none;
+				vertical-align: middle;
+				border: 1px solid transparent;
+			}
+			#email, #code, #toDevice{width:calc(100% - 14px);padding:2px 6px;margin:0px 0px 16px;border-width: 1px;height:30px;border-radius:.25em;}
+			input{font-size: 1em;}
+			.wait{
+				position: relative;
+				display: flex;
+				flex-wrap: wrap;
+				align-items: stretch;
+				width: 100%;
+			}
+			.wait>div, .wait>span{
+				display: flex;
+				align-items: center;
+				padding: .375rem .75rem;
+				font-size: 1rem;
+				font-weight: 400;
+				line-height: 1.5;
+				color: #212529;
+				text-align: center;
+				white-space: nowrap;
+				background-color: #e9ecef;
+				border: 1px solid #ced4da;
+				border-radius: .25rem;
+			}
+			input[type=checkbox] {
+				border-radius: .5em;
+				width: 1.2em;
+				height: 1.2em;
+			}
+			#wait{
+				margin-left: -1px;
+				flex: 1 1 auto;
+				width: 1%;
+				min-width: 0;
+				padding:0px 6px;
+			}
+			#wait_time{margin-left: -1px;}
+			#fora>.a{
+				width: 1%;
+				border: 1px solid grey;
+				display: table-cell;
+			}
+			#fora{font-size:0em;line-height:normal;margin:16px 0px;}
+			#fora a{font-size:16px;vertical-align:middle;padding:4px 0px;}
+			#forbtn>.a{
+				margin: 10px 0px;
+				width: 1%;
+				border: 1px solid grey;
+			}
+			#actionID{width: calc(100% - 6px);padding:2px;margin:0px 0px 10px 0px;height:30px;}
+			#data{width: calc(100% - 6px);padding:2px;margin:0px;}
+			pre{font-family: var(--bs-font-monospace);padding: 1rem !important;margin:0px;}
+			#content{border: 1px solid #0000 !important;}
+			h3{margin:0.5em 0px;}
+			#forbtn>a:nth-child(1){
+				width:20%;
+			}
+			#forbtn>a:nth-child(2){
+				color: #fff;
+				background-color: #0d6efd;
+				border-color: #0d6efd;
+				width:36%;
+				margin: auto calc(12% - 3px);
+			}
+			#forbtn>a:nth-child(3){
+				color: #fff;
+				background-color: #6c757d;
+				border-color: #6c757d;
+				width:20%;
+			}
+			#forbtn{font-size:0em;line-height:normal;}
+			#forbtn a{font-size:16px;vertical-align:middle;border-radius: .25rem;padding:4px 0px;}
+			#actionID, #data{border-radius: .25rem;border: 1px solid grey;}
+			
+		</style>
+		<script>
+			var username = localStorage.getItem('username');
+			var password = localStorage.getItem('password');
+			if (handuser && handpassword) {
+				document.getElementById('handuser').value = handuser;
+				document.getElementById('handpassword').value = handpassword;
+			}
+			function login(){
+				if(document.getElementById('login').style.display=="none"){
+					document.getElementById('login').style.display="inline-block";
+				}else{
+					document.getElementById('login').style.display="none";
+				}
+			}
+			function forget(){
+				var username1=document.getElementById('login').style.display="none";
+			}
+		</script>
+	</head>
+	<body>
+		<div id="all">
+			<h3 class="title">推送文本到电脑
+                <a class="btn" id="setting" onclick="on_or_off()" aria-expanded="true">连接设置</a>
+				<script>
+					function on_or_off(){
+						if(document.getElementById('setting_detial').style.display=="none"){
+							document.getElementById('setting_detial').style.display="block";
+						}else{
+							document.getElementById('setting_detial').style.display="none";
+						}
+					}
+				</script>
+			</h3>
+			<div id="setting_detial" class="hide show">
+				<div><input type="text" id="email" placeholder="Quicker邮箱"></div>
+				<div><input type="text" id="code" placeholder="推送验证码"></div>
+				<div><input type="text" id="toDevice" placeholder="目标设备  为空表活动主机 *表所有主机 或填具体主机名"></div>
+				<div class="wait">
+					<div style="border-radius:.25em 0px 0px .25em;">
+						<input type="checkbox" id="chkWait">
+						<label for="chkWait" >&nbsp;等待返回结果</label>
+					</div>
+					<input id="wait" type="number">
+					<span id="wait_time" style="border-radius:0px .25em .25em 0px;">毫秒</span>
+				</div>
+			</div>
+			<div id="fora">
+				<a class="btn a" onclick="choice_operation(1)" style="border-radius:6px 0px 0px 6px;margin-left:0px;">粘贴到窗口</a>
+				<a class="btn a" onclick="choice_operation(2)" >复制</a>
+				<a class="btn a" onclick="choice_operation(3)" >打开网址</a>
+				<a class="btn a" onclick="choice_operation(4)" style="border-radius:0px 6px 6px 0px;">运行动作</a>
+				<script>
+					function choice_operation(which){
+						if(which==1){document.getElementById("data").placeholder="要粘贴的内容";document.getElementById("actionID").style.display="none";operation="PASTE"}
+						if(which==2){document.getElementById("data").placeholder="要复制的内容";document.getElementById("actionID").style.display="none";operation="COPY"}
+						if(which==3){document.getElementById("data").placeholder="要打开的网址";document.getElementById("actionID").style.display="none";operation="OPEN"}
+						if(which==4){document.getElementById("data").placeholder="动作具体参数";document.getElementById("actionID").style.display="block";operation="ACTION"}
+					}
+				</script>
+			</div>
+			<div id="fordata">
+				<input type="text" id="actionID" placeholder="动作名称/ID" style="display: none;">
+				<textarea rows="8" id="data" class="form-control" placeholder="要粘贴的内容"></textarea>
+			</div>
+			<div id="forbtn">
+				<a class="btn a" onclick="choice_btn(1)" style="margin-left:0px;">粘贴</a>
+				<a class="btn a" onclick="choice_btn(2)" >发送</a>
+				<a class="btn a" onclick="choice_btn(3)" >清除</a>
+				<script>
+					function choice_btn(which){
+						if(which==1){
+							navigator.clipboard.readText()
+								.then(text => {
+									document.getElementById("data").value = text;
+								})
+								.catch(err => {
+									alert('获取剪贴板内容失败：\n' + err.message);
+								});
+						}
+						if(which==2){
+							var requestBody = {
+								toUser: document.getElementById('email').value,
+								code: document.getElementById('code').value,
+								toDevice: document.getElementById('toDevice').value,
+								operation: operation,
+								data: encodeURIComponent(document.getElementById("data").value),
+								action: operation=="ACTION"?document.getElementById('actionID').value:"",
+								wait: document.getElementById('chkWait').checked,
+								maxWaitMs: document.getElementById('chkWait').checked?document.getElementById('wait').value:0,
+								txt: false
+							};
+							fetch('https://push.getquicker.cn/to/quicker', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(requestBody)
+							}).then(function(response) {
+								 return response.json();
+							}).then(data => {
+								document.getElementById('backdate').textContent = JSON.stringify(data, null, 4);
+								if(data.isSuccess==false){
+									document.getElementById('content').style="border-color: #ff0000 !important";
+								}else{
+									document.getElementById('content').style="border-color: #00ff00 !important";
+								}
+							}).catch(function(error) {
+								document.getElementById("backdate").innerText=error;
+								document.getElementById('content').style="border-color: #ff0000 !important";
+							});
+						}
+						if(which==3){
+							document.getElementById("backdate").innerText = "";
+						}
+					}
+				</script>
+			</div>
+			<div id="content">
+				<pre id="backdate"></pre>
+			</div>
+		</div>
+		<script>
+			window.onload = function() {
+				choice_operation(1);
+			};
+		</script>
+	</body>
+</html>
