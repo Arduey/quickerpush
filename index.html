@@ -101,24 +101,6 @@
 			#actionID, #data{border-radius: .25rem;border: 1px solid grey;}
 			
 		</style>
-		<script>
-			var username = localStorage.getItem('username');
-			var password = localStorage.getItem('password');
-			if (handuser && handpassword) {
-				document.getElementById('handuser').value = handuser;
-				document.getElementById('handpassword').value = handpassword;
-			}
-			function login(){
-				if(document.getElementById('login').style.display=="none"){
-					document.getElementById('login').style.display="inline-block";
-				}else{
-					document.getElementById('login').style.display="none";
-				}
-			}
-			function forget(){
-				var username1=document.getElementById('login').style.display="none";
-			}
-		</script>
 	</head>
 	<body>
 		<div id="all">
@@ -138,6 +120,12 @@
 				<div><input type="text" id="email" placeholder="Quicker邮箱"></div>
 				<div><input type="text" id="code" placeholder="推送验证码"></div>
 				<div><input type="text" id="toDevice" placeholder="目标设备  为空表活动主机 *表所有主机 或填具体主机名"></div>
+				<div class="wait" style="margin: 0px 0px 16px;">
+					<div style="border-radius: .25em;width: 100%;">
+						<input type="checkbox" id="txt">
+						<label for="txt" >&nbsp;返回结果格式是否为txt&nbsp;(&nbsp;不勾选将返回Json&nbsp;)</label>
+					</div>
+				</div>
 				<div class="wait">
 					<div style="border-radius:.25em 0px 0px .25em;">
 						<input type="checkbox" id="chkWait">
@@ -190,7 +178,7 @@
 								action: operation=="ACTION"?document.getElementById('actionID').value:"",
 								wait: document.getElementById('chkWait').checked,
 								maxWaitMs: document.getElementById('chkWait').checked?document.getElementById('wait').value:0,
-								txt: false
+								txt: document.getElementById('txt').checked
 							};
 							fetch('https://push.getquicker.cn/to/quicker', {
 								method: 'POST',
@@ -199,13 +187,31 @@
 								},
 								body: JSON.stringify(requestBody)
 							}).then(function(response) {
-								 return response.json();
+								if(requestBody.txt){
+							        return response.text().then(text =>{
+							            return { isText: true, content: text };
+							        });
+							    }else{
+							        return response.json().then(json =>{
+							            return{ isText: false, content: json };
+							        });
+							    }
+								return response.json();
 							}).then(data => {
-								document.getElementById('backdate').textContent = JSON.stringify(data, null, 4);
-								if(data.isSuccess==false){
-									document.getElementById('content').style="border-color: #ff0000 !important";
-								}else{
-									document.getElementById('content').style="border-color: #00ff00 !important";
+								if(data.isText){
+							        document.getElementById('backdate').textContent = data.content;
+							        if (data.content.includes("ERROR:")) {
+							            document.getElementById('content').style = "border-color: #ff0000 !important";
+							        } else {
+							            document.getElementById('content').style = "border-color: #00ff00 !important";
+							        }
+							    }else{
+									document.getElementById('backdate').textContent = JSON.stringify(data.content, null, 4);
+									if(data.content.isSuccess==false){
+										document.getElementById('content').style="border-color: #ff0000 !important";
+									}else{
+										document.getElementById('content').style="border-color: #00ff00 !important";
+									}
 								}
 							}).catch(function(error) {
 								document.getElementById("backdate").innerText=error;
