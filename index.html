@@ -28,15 +28,17 @@
 				border: 1px solid transparent;
 			}
 			#email, #code, #toDevice{width:calc(100% - 14px);padding:2px 6px;margin:0px 0px 16px;border-width: 1px;height:30px;border-radius:.25em;}
-			input#toDevice {
+			#toDevice {
 			    width: calc(100% - 120px);    border-radius: 0.25em 0 0 0.25em;
 			}
-			#get{    width: 106px;
-    margin: 0px;
-    padding: 2px 0px;
-    height: 36px;
-    border-radius: 0 0.25em 0.25em 0;font-size: 1em;
-    border-width: 1px 1px 1px 0;}
+			#get{
+				width: 106px;
+			    margin: 0px;
+			    padding: 2px 0px;
+			    height: 36px;
+			    border-radius: 0 0.25em 0.25em 0;font-size: 1em;
+			    border-width: 1px 1px 1px 0;
+			}
 			input{font-size: 1em;}
 			.wait{
 				position: relative;
@@ -129,7 +131,12 @@
 				<div><input type="text" id="email" placeholder="Quicker邮箱"></div>
 				<div><input type="text" id="code" placeholder="推送验证码"></div>
 				<div style="display: flex;">
-					<input type="text" id="toDevice" placeholder="目标设备  为空表活动主机 *表所有主机 或填具体主机名">
+					<select id="toDevice">
+					  <option value="">活动主机</option>
+					  <option value="*">所有主机</option>
+					  <option value="host1">具体主机1</option>
+					  <option value="host2">具体主机2</option>
+					</select>
 					<button id="get">获取主机</button>
 				</div>
 				<div class="wait" style="margin: 0px 0px 16px;">
