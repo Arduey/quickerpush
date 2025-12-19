@@ -175,6 +175,8 @@
 						function fetchDevices() {
 							var email = document.getElementById('email').value;
 							var code = document.getElementById('code').value;
+							localStorage.setItem("email", email);
+							localStorage.setItem("code", code);
 							var url = `https://push.getquicker.cn/get/devices?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`;
 							fetch(url)
 							.then(response => response.json())
@@ -278,6 +280,8 @@
 								maxWaitMs: document.getElementById('chkWait').checked?document.getElementById('wait').value:0,
 								txt: document.getElementById('txt').checked
 							};
+							localStorage.setItem("email", document.getElementById('email').value);
+							localStorage.setItem("code", document.getElementById('code').value);
 							fetch('https://push.getquicker.cn/to/quicker', {
 								method: 'POST',
 								headers: {
@@ -329,6 +333,8 @@
 		<script>
 			window.onload = function() {
 				choice_operation(1);
+				document.getElementById('email').value=localStorage.getItem("email");
+				document.getElementById('code').value=localStorage.getItem("code");
 			};
 		</script>
 	</body>
