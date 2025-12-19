@@ -169,14 +169,14 @@
 				<a class="btn a" id="a4" onclick="choice_operation(4)" style="border-radius:0px 6px 6px 0px;">运行动作</a>
 				<script>
 					function choice_operation(which){
-						document.getElementById("a1").style.color="";
-						document.getElementById("a2").style.color="";
-						document.getElementById("a3").style.color="";
-						document.getElementById("a4").style.color="";
-						if(which==1){document.getElementById("data").placeholder="要粘贴的内容";document.getElementById("actionID").style.display="none";operation="PASTE";document.getElementById("a1").style.color="#6c757d;";}
-						if(which==2){document.getElementById("data").placeholder="要复制的内容";document.getElementById("actionID").style.display="none";operation="COPY";document.getElementById("a2").style.color="#6c757d;";}
-						if(which==3){document.getElementById("data").placeholder="要打开的网址";document.getElementById("actionID").style.display="none";operation="OPEN";document.getElementById("a3").style.color="#6c757d;";}
-						if(which==4){document.getElementById("data").placeholder="动作具体参数";document.getElementById("actionID").style.display="block";operation="ACTION";document.getElementById("a4").style.color="#6c757d;";}
+						document.getElementById("a1").style.backgroundColor="";
+						document.getElementById("a2").style.backgroundColor="";
+						document.getElementById("a3").style.backgroundColor="";
+						document.getElementById("a4").style.backgroundColor="";
+						if(which==1){document.getElementById("data").placeholder="要粘贴的内容";document.getElementById("actionID").style.display="none";operation="PASTE";document.getElementById("a1").style.backgroundColor="#6c757d;";}
+						if(which==2){document.getElementById("data").placeholder="要复制的内容";document.getElementById("actionID").style.display="none";operation="COPY";document.getElementById("a2").style.backgroundColor="#6c757d;";}
+						if(which==3){document.getElementById("data").placeholder="要打开的网址";document.getElementById("actionID").style.display="none";operation="OPEN";document.getElementById("a3").style.backgroundColor="#6c757d;";}
+						if(which==4){document.getElementById("data").placeholder="动作具体参数";document.getElementById("actionID").style.display="block";operation="ACTION";document.getElementById("a4").style.backgroundColor="#6c757d;";}
 						
 					}
 				</script>
