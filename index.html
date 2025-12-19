@@ -119,6 +119,20 @@
 			#fora a:nth-child(3) {
 			    border-width: 1px 0 1px 1px;
 			}
+			#copy {
+			    display: block;
+			    width: 35%;
+			    color: #fff;
+			    background-color: #0d6efd;
+			    border-color: #0d6efd;
+			    height: 26px;
+			    line-height: 26px;
+			    vertical-align: middle;
+			    border-radius: .25rem;
+			    padding: 4px 0px;
+			    text-align: center;
+			    margin: 0.5em auto;
+			}
 		</style>
 		<script>
 			var currentAlert = null;
@@ -266,7 +280,7 @@
 									document.getElementById("data").value = text;
 								})
 								.catch(err => {
-									alert('获取剪贴板内容失败：\n' + err.message);
+									showAutoCloseAlert("获取剪贴板内容失败:"+err.message,2000);
 								});
 						}
 						if(which==2){
@@ -324,12 +338,32 @@
 						if(which==3){
 							document.getElementById("backdate").innerText = "";
 						}
+						if(which==4){
+							var toUser=document.getElementById('email').value;
+							var code=document.getElementById('code').value;
+							var toDevice= document.getElementById('toDevice').value;
+							var operation= operation;
+							var data= encodeURIComponent(document.getElementById("data").value);
+							var action= operation=="ACTION"?document.getElementById('actionID').value:"";
+							var wait= document.getElementById('chkWait').checked;
+							var maxWaitMs= document.getElementById('chkWait').checked?document.getElementById('wait').value:0;
+							var txt= document.getElementById('txt').checked;
+							var url="https://push.getquicker.cn/to/quicker?"+"toUser="+toUser+"&code="+code+"&toDevice="+toDevice+"&operation="+operation+"&data="+data+"&action="+action+"&wait="+wait+"&maxWaitMs="+maxWaitMs+"&txt="+txt;
+							navigator.clipboard.writeText(url)
+						      .then(() => {
+								  showAutoCloseAlert("复制成功:",2000);
+						      })
+						      .catch(err => {
+								  showAutoCloseAlert("复制失败:"+err2000);
+						      });
+						}
 					}
 				</script>
 			</div>
 			<div id="content">
 				<pre id="backdate"></pre>
 			</div>
+			<a onclick="choice_btn(4)" id="copy">复制为链接</a>
 		</div>
 		<script>
 			window.onload = function() {
