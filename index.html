@@ -146,6 +146,34 @@
 					  <option value="host2">具体主机2</option>
 					</select>
 					<button id="get">获取主机</button>
+					<script>
+						function fetchDevices() {
+							var email = document.getElementById('email').value;
+							var code = document.getElementById('code').value;
+							var url = `https://push.getquicker.cn/get/devices?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`;
+							fetch(url)
+							.then(response => response.json())
+							.then(data => {
+							  var devices = data.devices;
+							  var activeDevice = data.activeDevice;
+								document.getElementById("toDevice").innerHTML="";
+							  var selectElement = document.getElementById("toDevice");
+							  devices.forEach(device => {
+								const option = document.createElement("option");
+								option.value = device;
+								if (device === activeDevice) {
+								  option.textContent = `${device} (当前活动)`;
+								} else {
+								  option.textContent = device;
+								}
+								selectElement.appendChild(option);
+							  });
+							})
+							.catch(error => {
+							  console.error("获取设备数据失败：", error);
+							});
+							}
+					</script>
 				</div>
 				<div class="wait" style="margin: 0px 0px 16px;">
 					<div style="border-radius: .25em;width: 100%;">
