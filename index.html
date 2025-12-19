@@ -120,7 +120,7 @@
 			    border-width: 1px 0 1px 1px;
 			}
 			#copy {
-			    display: block;
+			    display: none;
 			    width: 35%;
 			    color: #fff;
 			    background-color: #0d6efd;
@@ -334,6 +334,7 @@
 								document.getElementById("backdate").innerText=error;
 								document.getElementById('content').style="border-color: #ff0000 !important";
 							});
+							document.getElementById('copy').style.display="block";
 						}
 						if(which==3){
 							document.getElementById("backdate").innerText = "";
