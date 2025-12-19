@@ -120,6 +120,33 @@
 			    border-width: 1px 0 1px 1px;
 			}
 		</style>
+		<script>
+			var currentAlert = null;
+			function showAutoCloseAlert(message, duration) {
+				if (currentAlert) {
+				        document.body.removeChild(currentAlert);
+					currentAlert = null;
+				}
+				var alertDiv = document.createElement('div');
+				alertDiv.style.position = 'fixed';
+				alertDiv.style.top = '80%';
+				alertDiv.style.left = '50%';
+				alertDiv.style.transform = 'translate(-50%, -50%)';
+				alertDiv.style.padding = '10px';
+				alertDiv.style.backgroundColor = '#f44336'; // 红色背景
+				alertDiv.style.color = 'white';
+				alertDiv.style.zIndex = '1000';
+				alertDiv.style.fontSize = '1.2em';
+				alertDiv.style.borderRadius = '5px';
+				alertDiv.innerText = message;
+				document.body.appendChild(alertDiv);
+				currentAlert = alertDiv;
+				setTimeout(function() {
+					document.body.removeChild(alertDiv);
+					currentAlert = null;
+				}, duration);
+			}
+		</script>
 	</head>
 	<body>
 		<div id="all">
@@ -145,7 +172,7 @@
 					  <option value="host1">具体主机1</option>
 					  <option value="host2">具体主机2</option>
 					</select>
-					<button id="get">获取主机</button>
+					<button id="get" onclick="fetchDevices()">获取主机</button>
 					<script>
 						function fetchDevices() {
 							var email = document.getElementById('email').value;
@@ -154,25 +181,30 @@
 							fetch(url)
 							.then(response => response.json())
 							.then(data => {
-							  var devices = data.devices;
-							  var activeDevice = data.activeDevice;
-								document.getElementById("toDevice").innerHTML="";
-							  var selectElement = document.getElementById("toDevice");
-							  devices.forEach(device => {
-								const option = document.createElement("option");
-								option.value = device;
-								if (device === activeDevice) {
-								  option.textContent = `${device} (当前活动)`;
-								} else {
-								  option.textContent = device;
+								if(data.isSuccess){
+									var devices = data.devices;
+									  var activeDevice = data.activeDevice;
+										document.getElementById("toDevice").innerHTML="";
+									  var selectElement = document.getElementById("toDevice");
+									  devices.forEach(device => {
+										const option = document.createElement("option");
+										option.value = device;
+										if (device === activeDevice) {
+										  option.textContent = `${device} (当前活动)`;
+										} else {
+										  option.textContent = device;
+										}
+										selectElement.appendChild(option);
+									  });
+									showAutoCloseAlert("主机列表更新成功",2);
+								}else{
+									showAutoCloseAlert(data.message,2);
 								}
-								selectElement.appendChild(option);
-							  });
 							})
 							.catch(error => {
-							  console.error("获取设备数据失败：", error);
+							  showAutoCloseAlert(error,2)
 							});
-							}
+						}
 					</script>
 				</div>
 				<div class="wait" style="margin: 0px 0px 16px;">
