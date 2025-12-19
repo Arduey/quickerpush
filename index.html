@@ -196,13 +196,13 @@
 										}
 										selectElement.appendChild(option);
 									  });
-									showAutoCloseAlert("主机列表更新成功",2);
+									showAutoCloseAlert("主机列表更新成功",2000);
 								}else{
-									showAutoCloseAlert(data.message,2);
+									showAutoCloseAlert(data.message,2000);
 								}
 							})
 							.catch(error => {
-							  showAutoCloseAlert(error,2)
+							  showAutoCloseAlert(error,2000)
 							});
 						}
 					</script>
