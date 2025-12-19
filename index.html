@@ -352,7 +352,7 @@
 							var url="https://push.getquicker.cn/to/quicker?"+"toUser="+toUser+"&code="+code+"&toDevice="+toDevice+"&operation="+operation+"&data="+data+"&action="+action+"&wait="+wait+"&maxWaitMs="+maxWaitMs+"&txt="+txt;
 							navigator.clipboard.writeText(url)
 						      .then(() => {
-								  showAutoCloseAlert("复制成功:",2000);
+								  showAutoCloseAlert("复制成功",2000);
 						      })
 						      .catch(err => {
 								  showAutoCloseAlert("复制失败:"+err2000);
