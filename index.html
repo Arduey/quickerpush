@@ -169,8 +169,6 @@
 					<select id="toDevice">
 					  <option value="">活动主机</option>
 					  <option value="*">所有主机</option>
-					  <option value="host1">具体主机1</option>
-					  <option value="host2">具体主机2</option>
 					</select>
 					<button id="get" onclick="fetchDevices()">获取主机</button>
 					<script>
@@ -184,7 +182,7 @@
 								if(data.isSuccess){
 									var devices = data.devices;
 									  var activeDevice = data.activeDevice;
-										document.getElementById("toDevice").innerHTML="";
+										document.getElementById("toDevice").innerHTML="<option value=\"\">活动主机</option><option value=\"*\">所有主机</option>";
 									  var selectElement = document.getElementById("toDevice");
 									  devices.forEach(device => {
 										const option = document.createElement("option");
