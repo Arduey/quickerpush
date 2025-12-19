@@ -90,7 +90,7 @@
 				border: 1px solid grey;
 			}
 			#actionID{width: calc(100% - 6px);padding:2px;margin:0px 0px 10px 0px;height:30px;}
-			#data{width: calc(100% - 6px);padding:2px;margin:0px;}
+			#data{width: calc(100% - 6px);padding:2px;margin:0px;font-size: 1.2em;}
 			pre{font-family: var(--bs-font-monospace);padding: 1rem !important;margin:0px;}
 			#content{border: 1px solid #0000 !important;}
 			h3{margin:0.5em 0px;}
@@ -163,16 +163,21 @@
 				</div>
 			</div>
 			<div id="fora">
-				<a class="btn a" onclick="choice_operation(1)" style="border-radius:6px 0px 0px 6px;margin-left:0px;">粘贴到窗口</a>
-				<a class="btn a" onclick="choice_operation(2)" >复制</a>
-				<a class="btn a" onclick="choice_operation(3)" >打开网址</a>
-				<a class="btn a" onclick="choice_operation(4)" style="border-radius:0px 6px 6px 0px;">运行动作</a>
+				<a class="btn a" id="a1" onclick="choice_operation(1)" style="border-radius:6px 0px 0px 6px;margin-left:0px;">粘贴到窗口</a>
+				<a class="btn a" id="a2" onclick="choice_operation(2)" >复制</a>
+				<a class="btn a" id="a3" onclick="choice_operation(3)" >打开网址</a>
+				<a class="btn a" id="a4" onclick="choice_operation(4)" style="border-radius:0px 6px 6px 0px;">运行动作</a>
 				<script>
 					function choice_operation(which){
-						if(which==1){document.getElementById("data").placeholder="要粘贴的内容";document.getElementById("actionID").style.display="none";operation="PASTE"}
-						if(which==2){document.getElementById("data").placeholder="要复制的内容";document.getElementById("actionID").style.display="none";operation="COPY"}
-						if(which==3){document.getElementById("data").placeholder="要打开的网址";document.getElementById("actionID").style.display="none";operation="OPEN"}
-						if(which==4){document.getElementById("data").placeholder="动作具体参数";document.getElementById("actionID").style.display="block";operation="ACTION"}
+						document.getElementById("a1").style.color="";
+						document.getElementById("a2").style.color="";
+						document.getElementById("a3").style.color="";
+						document.getElementById("a4").style.color="";
+						if(which==1){document.getElementById("data").placeholder="要粘贴的内容";document.getElementById("actionID").style.display="none";operation="PASTE";document.getElementById("a1").style.color="#6c757d;";}
+						if(which==2){document.getElementById("data").placeholder="要复制的内容";document.getElementById("actionID").style.display="none";operation="COPY";document.getElementById("a2").style.color="#6c757d;";}
+						if(which==3){document.getElementById("data").placeholder="要打开的网址";document.getElementById("actionID").style.display="none";operation="OPEN";document.getElementById("a3").style.color="#6c757d;";}
+						if(which==4){document.getElementById("data").placeholder="动作具体参数";document.getElementById("actionID").style.display="block";operation="ACTION";document.getElementById("a4").style.color="#6c757d;";}
+						
 					}
 				</script>
 			</div>
