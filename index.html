@@ -218,6 +218,15 @@
 					</div>
 					<input id="wait" type="number">
 					<span id="wait_time" style="border-radius:0px .25em .25em 0px;">毫秒</span>
+					<script>
+					  var inputElement = document.getElementById("wait");
+					  inputElement.addEventListener("input", function() {
+					    let value = parseInt(inputElement.value);
+					    if (value < 0||value > 30000) {
+							document.getElementById("wait").value=0;
+					      showAutoCloseAlert("请输入0-30000之间的整数",2000);
+					  });
+					</script>
 				</div>
 			</div>
 			<div id="fora">
